@@ -28,7 +28,7 @@ async def cancel_handler(message: types.Message, state: FSMContext):
     if current_state is None:
         return
     await state.finish()
-    await message.reply('OK')
+    await message.reply('Вы передумали становиться Сантой=(')
 
 
 #Ловим первый ответ и пишем в словарь
@@ -72,7 +72,7 @@ async def load_post_adr(message : types.Message, state: FSMContext):
     async with state.proxy() as data:
         await message.reply(str(data))
     await state.finish()
-    await bot.send_message(message.chat.id, 'Вы стали участником игры')
+    await bot.send_message(message.chat.id, 'Поздравляем! Вы стали участником игры!')
 
 # @dp.message_handler(commands = ['start'])
 async def command_start(message : types.Message):
@@ -82,20 +82,20 @@ async def command_start(message : types.Message):
 async def games_rules(message : types.Message):
     await bot.send_message(message.chat.id, 'Правила игры')
 
-# # @dp.message_handler(commands = ['Стать_Сантой'])
-# async def take_part(message : types.Message):
-#     await bot.send_message(message.chat.id, 'Вы стали участником игры')
-
 # @dp.message_handler(commands = ['Перейти_на_сайт'])
 async def leave_game(message : types.Message):
-    await bot.send_message(message.chat.id, 'Вы покинули игру')
+    await bot.send_message(message.chat.id, 'http://localhost:3000/home')
+
+#@dp.message_handler()
+async def empty(message: types.Message):
+    await message.answer('Стать Сантой гораздо лучше, чем болтать о пустяках=)')
+    await message.delete()
 
 def register_handlers_client(dp : Dispatcher):
     dp.register_message_handler(command_start, commands = ['start'])
     dp.register_message_handler(cancel_handler, state="*", commands='отмена')
     dp.register_message_handler(cancel_handler, Text(equals='отмена', ignore_case=True), state="*")
     dp.register_message_handler(games_rules, commands = ['Правила_игры'])
-    #dp.register_message_handler(take_part, commands = ['Стать_Сантой'])
     dp.register_message_handler(leave_game, commands = ['Перейти_на_сайт'])
     dp.register_message_handler(cm_start, commands = ['Стать_Сантой'], state=None)
     dp.register_message_handler(load_email, state=FSMAdmin.email)
@@ -103,4 +103,4 @@ def register_handlers_client(dp : Dispatcher):
     dp.register_message_handler(load_name, state=FSMAdmin.name)
     dp.register_message_handler(load_age, state=FSMAdmin.age)
     dp.register_message_handler(load_post_adr, state=FSMAdmin.post_adr)
-    
+    dp.register_message_handler(empty)
